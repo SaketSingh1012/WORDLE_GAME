@@ -28,8 +28,8 @@ async function generate() {
   hidden = wordList[Math.floor(Math.random() * wordList.length)];
 
   last = new Array(hidden.length).fill('-').join('');
-  console.log(`Hello User: The word length is ${hidden.length}`)
-  console.log(`The word is ${hidden}`);
+  console.log(`Hello User, Welcome to ${hidden.length} letters Wordle Guess Game`)
+  // console.log(`The word is ${hidden}`);
   console.log('Press start button to start the game');
 
   const input = await new Promise((resolve) => {
@@ -45,15 +45,12 @@ async function generate() {
 }
 
 function gameOver() {
-  console.log("You Lost!");
-  for (let i = 0; i < hidden.length; i++) {
-    console.log(hidden[i]);
-  }
+  console.log(`You Lost! The word was ${hidden}`);
   rl.close();
 }
 
 async function startGame() {
-  console.log(`Welcome to Wordle! You have ${chances} attempts to guess the word.`);
+  console.log(`You have ${chances} attempts to guess the word.`);
 
   const checkGameStatus = async () => {
     if (last === hidden) {
