@@ -32,7 +32,7 @@ async function generate() {
   console.log(
     `Hello User, Welcome to ${hidden.length} letters Wordle Guess Game`
   );
-  console.log(`The word is ${hidden}`);
+  // console.log(`The word is ${hidden}`);
   console.log("Press start button to start the game");
 
   const input = await new Promise((resolve) => {
@@ -105,7 +105,7 @@ async function startGame() {
 
         feedback.push({
           index: i,
-          guessedLetter: guessedLetterColor, // Add the color here
+          guessedLetter: guessedLetterColor,
           isCorrect,
           isPresent,
         });
