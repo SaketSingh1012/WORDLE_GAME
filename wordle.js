@@ -30,9 +30,9 @@ async function generate() {
 
   last = new Array(hidden.length).fill("-").join("");
   console.log(
-    `Hello User, Welcome to ${hidden.length} letters Wordle Guess Game`
+    `Hello User, Welcome to ${hidden.length} letters Wordle Guess Game\nInstructions:\n1.If the letter is in the word and in the right spot, it will turn green.\n2.If the letter is in the word, but not on the right spot, it will turn yellow.\n3.If the letter turns gray, the letter is not in the word at all.`
   );
-  // console.log(`The word is ${hidden}`);
+  console.log(`The word is ${hidden}`);
   console.log("Press start button to start the game");
 
   const input = await new Promise((resolve) => {
@@ -121,7 +121,7 @@ async function startGame() {
 
       feedback.forEach((item) => {
         console.log(
-          `Index: ${item.index}, Guessed Letter: ${item.guessedLetter}, Correct: ${item.isCorrect}, Present: ${item.isPresent}`
+          `index: ${item.index}, guessedLetter: ${item.guessedLetter}, isCorrect: ${item.isCorrect}, isPresent: ${item.isPresent}`
         );
       });
 
