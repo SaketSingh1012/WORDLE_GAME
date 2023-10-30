@@ -1,5 +1,6 @@
 const readline = require("readline");
 const fs = require("fs").promises;
+const chalk = require("chalk");
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -31,7 +32,7 @@ async function generate() {
   console.log(
     `Hello User, Welcome to ${hidden.length} letters Wordle Guess Game`
   );
-  // console.log(`The word is ${hidden}`);
+  console.log(`The word is ${hidden}`);
   console.log("Press start button to start the game");
 
   const input = await new Promise((resolve) => {
@@ -41,7 +42,9 @@ async function generate() {
   if (input === "start") {
     await startGame();
   } else {
-    console.log("Invalid input. Please press start button to start the game.");
+    console.log(
+      "Invalid input. Please press the start button to start the game."
+    );
     rl.close();
   }
 }
@@ -90,9 +93,19 @@ async function startGame() {
           guessedLetterCount[guessedLetter] <
           hidden.split(guessedLetter).length - 1;
 
+        let guessedLetterColor;
+
+        if (isCorrect) {
+          guessedLetterColor = chalk.green(guessedLetter);
+        } else if (isPresent) {
+          guessedLetterColor = chalk.yellow(guessedLetter);
+        } else {
+          guessedLetterColor = chalk.gray(guessedLetter);
+        }
+
         feedback.push({
           index: i,
-          guessedLetter,
+          guessedLetter: guessedLetterColor, // Add the color here
           isCorrect,
           isPresent,
         });
@@ -106,7 +119,11 @@ async function startGame() {
         guessedLetterCount[guessedLetter]++;
       }
 
-      console.log(feedback);
+      feedback.forEach((item) => {
+        console.log(
+          `Index: ${item.index}, Guessed Letter: ${item.guessedLetter}, Correct: ${item.isCorrect}, Present: ${item.isPresent}`
+        );
+      });
 
       chances--;
 
@@ -116,5 +133,4 @@ async function startGame() {
 
   await checkGameStatus();
 }
-
 generate();
