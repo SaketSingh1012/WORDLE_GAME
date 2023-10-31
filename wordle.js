@@ -78,7 +78,7 @@ async function startGame() {
         } else if (!wordList.includes(guess)) {
           console.log("The word is not present in the list");
         }
-      } while (guess.length !== 5  || !wordList.includes(guess));
+      } while (guess.length !== 5 || !wordList.includes(guess));
 
       last = "";
       let feedback = [];
@@ -91,7 +91,7 @@ async function startGame() {
         if (isCorrect) {
           guessedLettersDict[i] = null;
         }
-        
+
         feedback.push({
           index: i,
           guessedLetter,
@@ -106,7 +106,8 @@ async function startGame() {
           guessedLetterColor = chalk.green(item.guessedLetter);
         } else if (guessedLettersDict.includes(item.guessedLetter)) {
           guessedLetterColor = chalk.yellow(item.guessedLetter);
-          guessedLettersDict[guessedLettersDict.indexOf(item.guessedLetter)] = null;
+          guessedLettersDict[guessedLettersDict.indexOf(item.guessedLetter)] =
+            null;
         } else {
           guessedLetterColor = chalk.gray(item.guessedLetter);
         }
