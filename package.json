@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "wordle.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha wordle.test.js"
   },
   "author": "",
   "license": "ISC",
@@ -11,5 +11,11 @@
   "description": "",
   "dependencies": {
     "chalk": "^4.1.2"
+  },
+  "devDependencies": {
+    "chai": "^4.3.10",
+    "jest": "^29.7.0",
+    "mocha": "^10.2.0",
+    "sinon": "^17.0.0"
   }
 }

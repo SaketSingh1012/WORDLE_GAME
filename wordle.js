@@ -11,6 +11,11 @@ let wordList;
 let chances = 6;
 let hidden = "";
 let last = "";
+let guessedLettersDict;
+
+function setMockUserInput(mockFunction) {
+  rl.question = mockFunction;
+}
 
 async function loadWordList() {
   try {
@@ -22,31 +27,57 @@ async function loadWordList() {
   }
 }
 
-async function generate() {
-  await loadWordList();
-
-  chances = 6;
-  hidden = wordList[Math.floor(Math.random() * wordList.length)];
-
-  last = new Array(hidden.length).fill("-").join("");
+function displayWelcomeMessage(word) {
   console.log(
-    `Hello User, Welcome to ${hidden.length} letters Wordle Guess Game\nInstructions:\n1.If the letter is in the word and in the right spot, it will turn green.\n2.If the letter is in the word, but not on the right spot, it will turn yellow.\n3.If the letter turns gray, the letter is not in the word at all.`
+    `Hello User, Welcome to ${word.length} letters Wordle Guess Game`
   );
-  console.log(`The word is ${hidden}`);
-  console.log("Press start button to start the game");
+  console.log(`Instructions:`);
+  console.log(
+    `1. ${chalk.green(
+      "If the letter is in the word and in the right spot, it will turn green"
+    )}.`
+  );
+  console.log(
+    `2. ${chalk.yellow(
+      "If the letter is in the word, but not on the right spot, it will turn yellow"
+    )}.`
+  );
+  console.log(
+    `3. ${chalk.grey(
+      "If the letter turns gray, the letter is not in the word at all"
+    )}.`
+  );
+  console.log(`The word is ${word}`);
+}
 
-  const input = await new Promise((resolve) => {
-    rl.question("", resolve);
-  });
+function displayGameStartMessage(attempts) {
+  console.log(`You have ${attempts} attempts to guess the word.`);
+}
 
-  if (input === "start") {
-    await startGame();
-  } else {
-    console.log(
-      "Invalid input. Please press the start button to start the game."
-    );
-    rl.close();
+function validateWordLength(word) {
+  return word.length === 5;
+}
+
+function validateWordInList(word, wordList) {
+  return wordList.includes(word);
+}
+
+function evaluateGuess(wordToGuess, guess) {
+  const result = [];
+
+  for (let i = 0; i < wordToGuess.length; i++) {
+    const guessedLetter = guess[i];
+    const isCorrect = guessedLetter === wordToGuess[i];
+    const statusColor = isCorrect ? chalk.green : chalk.yellow;
+    const statusText = isCorrect ? "green" : "yellow";
+    result.push({
+      index: i,
+      guessedLetter: statusColor(guessedLetter),
+      status: statusColor(statusText),
+    });
   }
+
+  return result;
 }
 
 function gameOver() {
@@ -59,7 +90,9 @@ async function startGame() {
 
   const checkGameStatus = async () => {
     if (last === hidden) {
-      console.log("Congratulations! You guessed the word: " + hidden);
+      console.log(
+        `Congratulations! You guessed the word: ${chalk.green(hidden)}`
+      );
       rl.close();
     } else if (chances <= 0) {
       gameOver();
@@ -82,7 +115,7 @@ async function startGame() {
 
       last = "";
       let feedback = [];
-      const guessedLettersDict = [...hidden];
+      guessedLettersDict = [...hidden];
       for (let i = 0; i < hidden.length; i++) {
         const guessedLetter = guess[i];
         const isCorrect = guessedLetter === guessedLettersDict[i];
@@ -99,26 +132,31 @@ async function startGame() {
       }
 
       feedback.forEach((item) => {
-        let guessedLetterColor;
+        let statusColor;
+        let statusText;
 
         if (item.isCorrect) {
-          guessedLetterColor = chalk.green(item.guessedLetter);
+          statusColor = chalk.green;
+          statusText = "green";
         } else if (guessedLettersDict.includes(item.guessedLetter)) {
-          guessedLetterColor = chalk.yellow(item.guessedLetter);
+          statusColor = chalk.yellow;
+          statusText = "yellow";
           guessedLettersDict[guessedLettersDict.indexOf(item.guessedLetter)] =
             null;
         } else {
-          guessedLetterColor = chalk.gray(item.guessedLetter);
+          statusColor = chalk.grey;
+          statusText = "grey";
         }
 
         console.log(
-          `index: ${item.index}, guessedLetter: ${guessedLetterColor}`
+          `index: ${item.index}, guessedLetter: ${statusColor(
+            item.guessedLetter
+          )}   status: ${statusColor(statusText)}`
         );
       });
 
-      // Check if the user has guessed the word correctly
       if (guess === hidden) {
-        console.log("Congratulations! You guessed the word: " + hidden);
+        console.log(`Congratulations! You guessed the word: ${hidden}`);
         rl.close();
         return;
       }
@@ -132,4 +170,38 @@ async function startGame() {
   await checkGameStatus();
 }
 
+async function generate(wordListArray) {
+  if (
+    wordListArray &&
+    Array.isArray(wordListArray) &&
+    wordListArray.length > 0
+  ) {
+    wordList = wordListArray;
+  } else {
+    await loadWordList();
+  }
+
+  chances = 6;
+  hidden = wordList[Math.floor(Math.random() * wordList.length)];
+
+  displayWelcomeMessage(hidden);
+  console.log("Press start button to start the game");
+
+  const input = await new Promise((resolve) => {
+    rl.question("", resolve);
+  });
+
+  if (input === "start") {
+    displayGameStartMessage(chances);
+    await startGame();
+  } else {
+    console.log(
+      "Invalid input. Please press the start button to start the game."
+    );
+    rl.close();
+  }
+}
+
 generate();
+
+module.exports = evaluateGuess;
