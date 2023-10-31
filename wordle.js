@@ -83,7 +83,6 @@ async function startGame() {
       last = "";
       let feedback = [];
       const guessedLettersDict = [...hidden];
-
       for (let i = 0; i < hidden.length; i++) {
         const guessedLetter = guess[i];
         const isCorrect = guessedLetter === guessedLettersDict[i];
@@ -116,6 +115,13 @@ async function startGame() {
           `index: ${item.index}, guessedLetter: ${guessedLetterColor}`
         );
       });
+
+      // Check if the user has guessed the word correctly
+      if (guess === hidden) {
+        console.log("Congratulations! You guessed the word: " + hidden);
+        rl.close();
+        return;
+      }
 
       chances--;
 
