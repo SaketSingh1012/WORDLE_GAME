@@ -76,7 +76,7 @@ async function startGame() {
             "The word to guess should be exactly 5 letters long. Guess the word again."
           );
         }
-        if(!wordList.includes(guess)){
+        if (!wordList.includes(guess)) {
           console.log("Thw word is not present in the list");
         }
       } while (guess.length !== 5 || !wordList.includes(guess));
@@ -92,10 +92,9 @@ async function startGame() {
         if (!guessedLetterCount[guessedLetter]) {
           guessedLetterCount[guessedLetter] = 0;
         }
-        const isPresent =
-          guessedLetterCount[guessedLetter] <
-          hidden.split(guessedLetter).length - 1;
+        const isPresent = guessedLetterCount[guessedLetter] > 0;
 
+        guessedLetterCount[guessedLetter]++;
         let guessedLetterColor;
 
         if (isCorrect) {
