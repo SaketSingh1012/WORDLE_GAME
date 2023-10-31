@@ -76,7 +76,10 @@ async function startGame() {
             "The word to guess should be exactly 5 letters long. Guess the word again."
           );
         }
-      } while (guess.length !== 5);
+        if(!wordList.includes(guess)){
+          console.log("Thw word is not present in the list");
+        }
+      } while (guess.length !== 5 || !wordList.includes(guess));
 
       last = "";
       let feedback = [];
