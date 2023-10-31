@@ -75,55 +75,44 @@ async function startGame() {
           console.log(
             "The word to guess should be exactly 5 letters long. Guess the word again."
           );
+        } else if (!wordList.includes(guess)) {
+          console.log("The word is not present in the list");
         }
-        if (!wordList.includes(guess)) {
-          console.log("Thw word is not present in the list");
-        }
-      } while (guess.length !== 5 || !wordList.includes(guess));
+      } while (guess.length !== 5  || !wordList.includes(guess));
 
       last = "";
       let feedback = [];
-      const guessedLetterCount = {};
+      const guessedLettersDict = [...hidden];
 
       for (let i = 0; i < hidden.length; i++) {
         const guessedLetter = guess[i];
-        const isCorrect = guessedLetter === hidden[i];
-
-        if (!guessedLetterCount[guessedLetter]) {
-          guessedLetterCount[guessedLetter] = 0;
-        }
-        const isPresent = guessedLetterCount[guessedLetter] > 0;
-
-        guessedLetterCount[guessedLetter]++;
-        let guessedLetterColor;
+        const isCorrect = guessedLetter === guessedLettersDict[i];
 
         if (isCorrect) {
-          guessedLetterColor = chalk.green(guessedLetter);
-        } else if (isPresent) {
-          guessedLetterColor = chalk.yellow(guessedLetter);
-        } else {
-          guessedLetterColor = chalk.gray(guessedLetter);
+          guessedLettersDict[i] = null; // Mark the letter as used
         }
-
+        
         feedback.push({
           index: i,
-          guessedLetter: guessedLetterColor,
+          guessedLetter,
           isCorrect,
-          isPresent,
         });
-
-        if (isCorrect) {
-          last += guessedLetter;
-        } else {
-          last += "-";
-        }
-
-        guessedLetterCount[guessedLetter]++;
       }
 
       feedback.forEach((item) => {
+        let guessedLetterColor;
+
+        if (item.isCorrect) {
+          guessedLetterColor = chalk.green(item.guessedLetter);
+        } else if (guessedLettersDict.includes(item.guessedLetter)) {
+          guessedLetterColor = chalk.yellow(item.guessedLetter);
+          guessedLettersDict[guessedLettersDict.indexOf(item.guessedLetter)] = null;
+        } else {
+          guessedLetterColor = chalk.gray(item.guessedLetter);
+        }
+
         console.log(
-          `index: ${item.index}, guessedLetter: ${item.guessedLetter}, isCorrect: ${item.isCorrect}, isPresent: ${item.isPresent}`
+          `index: ${item.index}, guessedLetter: ${guessedLetterColor}`
         );
       });
 
@@ -135,4 +124,5 @@ async function startGame() {
 
   await checkGameStatus();
 }
+
 generate();
