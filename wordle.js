@@ -89,7 +89,7 @@ async function startGame() {
         const isCorrect = guessedLetter === guessedLettersDict[i];
 
         if (isCorrect) {
-          guessedLettersDict[i] = null; // Mark the letter as used
+          guessedLettersDict[i] = null;
         }
         
         feedback.push({
