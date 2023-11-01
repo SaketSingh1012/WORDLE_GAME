@@ -1,6 +1,6 @@
 function evaluateGuess(wordToGuess, guess) {
   const feedback = [];
-  let guessedLettersDict = [...wordToGuess];
+  const guessedLettersDict = [...wordToGuess];
 
   for (let i = 0; i < wordToGuess.length; i++) {
     const guessedLetter = guess[i];
@@ -13,32 +13,23 @@ function evaluateGuess(wordToGuess, guess) {
         guessedLetter,
         status: "green",
       });
-    }
-  }
-
-  for (let i = 0; i < wordToGuess.length; i++) {
-    if (guessedLettersDict[i] !== null) {
-      const guessedLetter = guess[i];
-      const isPresent = guessedLettersDict.includes(guessedLetter);
-
-      if (isPresent) {
-        guessedLettersDict[i] = null;
-        feedback.push({
-          index: i,
-          guessedLetter,
-          status: "yellow",
-        });
-      }
-    }
-  }
-
-  for (let i = 0; i < wordToGuess.length; i++) {
-    if (guessedLettersDict[i] !== null) {
+    } else {
       feedback.push({
         index: i,
-        guessedLetter: guess[i],
-        status: "grey",
+        guessedLetter,
+        status: "gray",
       });
+    }
+  }
+
+  for (let i = 0; i < wordToGuess.length; i++) {
+    if (
+      feedback[i].status === "gray" &&
+      guessedLettersDict.includes(guess[i])
+    ) {
+      const correctIndex = guessedLettersDict.indexOf(guess[i]);
+      guessedLettersDict[correctIndex] = null;
+      feedback[i].status = "yellow";
     }
   }
 
