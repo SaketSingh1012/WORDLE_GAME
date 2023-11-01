@@ -74,7 +74,7 @@ async function startGame() {
         } else if (!wordList.includes(guess)) {
           console.log("The word is not present in the list");
         }
-      } while (guess.length !== 5);
+      } while (guess.length !== 5 || !wordList.includes(guess));
 
       last = "";
       const feedback = evaluateGuess(hidden, guess);
