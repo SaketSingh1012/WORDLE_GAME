@@ -1,6 +1,7 @@
 const readline = require("readline");
 const fs = require("fs").promises;
 const chalk = require("chalk");
+const evaluateGuess = require("./wordleEvaluator");
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -11,11 +12,6 @@ let wordList;
 let chances = 6;
 let hidden = "";
 let last = "";
-let guessedLettersDict;
-
-function setMockUserInput(mockFunction) {
-  rl.question = mockFunction;
-}
 
 async function loadWordList() {
   try {
@@ -54,37 +50,6 @@ function displayGameStartMessage(attempts) {
   console.log(`You have ${attempts} attempts to guess the word.`);
 }
 
-// function validateWordLength(word) {
-//   return word.length === 5;
-// }
-
-// function validateWordInList(word, wordList) {
-//   return wordList.includes(word);
-// }
-
-function evaluateGuess(wordToGuess, guess) {
-  const result = [];
-
-  for (let i = 0; i < wordToGuess.length; i++) {
-    const guessedLetter = guess[i];
-    const isCorrect = guessedLetter === wordToGuess[i];
-    const statusColor = isCorrect ? chalk.green : chalk.yellow;
-    const statusText = isCorrect ? "green" : "yellow";
-    result.push({
-      index: i,
-      guessedLetter: statusColor(guessedLetter),
-      status: statusColor(statusText),
-    });
-  }
-
-  return result;
-}
-
-function gameOver() {
-  console.log(`You Lost! The word was ${hidden}`);
-  rl.close();
-}
-
 async function startGame() {
   const checkGameStatus = async () => {
     if (last === hidden) {
@@ -109,47 +74,16 @@ async function startGame() {
         } else if (!wordList.includes(guess)) {
           console.log("The word is not present in the list");
         }
-      } while (guess.length !== 5 || !wordList.includes(guess));
+      } while (guess.length !== 5);
 
       last = "";
-      let feedback = [];
-      guessedLettersDict = [...hidden];
-      for (let i = 0; i < hidden.length; i++) {
-        const guessedLetter = guess[i];
-        const isCorrect = guessedLetter === guessedLettersDict[i];
-
-        if (isCorrect) {
-          guessedLettersDict[i] = null;
-        }
-
-        feedback.push({
-          index: i,
-          guessedLetter,
-          isCorrect,
-        });
-      }
+      const feedback = evaluateGuess(hidden, guess);
 
       feedback.forEach((item) => {
-        let statusColor;
-        let statusText;
-
-        if (item.isCorrect) {
-          statusColor = chalk.green;
-          statusText = "green";
-        } else if (guessedLettersDict.includes(item.guessedLetter)) {
-          statusColor = chalk.yellow;
-          statusText = "yellow";
-          guessedLettersDict[guessedLettersDict.indexOf(item.guessedLetter)] =
-            null;
-        } else {
-          statusColor = chalk.grey;
-          statusText = "grey";
-        }
-
         console.log(
-          `index: ${item.index}, guessedLetter: ${statusColor(
+          `index: ${item.index}, guessedLetter: ${chalk[item.status](
             item.guessedLetter
-          )}   status: ${statusColor(statusText)}`
+          )}   status: ${chalk[item.status](item.status)}`
         );
       });
 
@@ -168,7 +102,7 @@ async function startGame() {
   await checkGameStatus();
 }
 
-async function generate(wordListArray) {
+async function initializeAndStartWordleGame(wordListArray) {
   if (
     wordListArray &&
     Array.isArray(wordListArray) &&
@@ -200,6 +134,4 @@ async function generate(wordListArray) {
   }
 }
 
-generate();
-
-module.exports = evaluateGuess;
+initializeAndStartWordleGame();
