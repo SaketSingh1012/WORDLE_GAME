@@ -17,14 +17,14 @@ function evaluateGuess(wordToGuess, guess) {
       feedback.push({
         index: i,
         guessedLetter,
-        status: "gray",
+        status: "grey",
       });
     }
   }
 
   for (let i = 0; i < wordToGuess.length; i++) {
     if (
-      feedback[i].status === "gray" &&
+      feedback[i].status === "grey" &&
       guessedLettersDict.includes(guess[i])
     ) {
       const correctIndex = guessedLettersDict.indexOf(guess[i]);
