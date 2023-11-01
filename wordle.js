@@ -54,13 +54,13 @@ function displayGameStartMessage(attempts) {
   console.log(`You have ${attempts} attempts to guess the word.`);
 }
 
-function validateWordLength(word) {
-  return word.length === 5;
-}
+// function validateWordLength(word) {
+//   return word.length === 5;
+// }
 
-function validateWordInList(word, wordList) {
-  return wordList.includes(word);
-}
+// function validateWordInList(word, wordList) {
+//   return wordList.includes(word);
+// }
 
 function evaluateGuess(wordToGuess, guess) {
   const result = [];
@@ -86,8 +86,6 @@ function gameOver() {
 }
 
 async function startGame() {
-  console.log(`You have ${chances} attempts to guess the word.`);
-
   const checkGameStatus = async () => {
     if (last === hidden) {
       console.log(
